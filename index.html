@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estado de Cuentas 📊</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --primary: #4f46e5;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --expense: #dc2626;
+            --text-main: #111827;
+            --text-light: #6b7280;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 20px;
+            line-height: 1.5;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; }
+
+        /* HEADER */
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-weight: 800; color: var(--primary); font-size: 1.8rem; }
+        p.date { color: var(--text-light); font-size: 0.9rem; margin-top: 5px; }
+
+        /* DASHBOARD FINANCIERO (La ecuación) */
+        .dashboard {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .math-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 15px 20px;
+            text-align: center;
+            min-width: 140px;
+            flex: 1;
+        }
+
+        .stat-box.main { background: #e0e7ff; border-color: #c7d2fe; }
+        .stat-box.expense-box { background: #fef2f2; border-color: #fecaca; }
+        
+        .stat-label { display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
+        .stat-value { display: block; font-size: 1.5rem; font-weight: 800; }
+        .stat-sub { display: block; font-size: 0.75rem; color: var(--text-light); margin-top: 2px; }
+
+        .operator { font-size: 1.5rem; font-weight: bold; color: var(--text-light); padding: 0 5px; }
+
+        /* Global Progress */
+        .global-progress-container { text-align: center; padding: 0 10px; }
+        .progress-text { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; font-weight: 600; color: var(--text-light); }
+        .p-bar-bg { background: #e5e7eb; height: 12px; border-radius: 6px; overflow: hidden; }
+        .p-bar-fill { height: 100%; background: var(--primary); width: 0%; transition: width 1.5s ease-out; }
+
+        /* CONTROLS */
+        .controls { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .search-wrapper { flex-grow: 1; position: relative; }
+        .search-wrapper i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-light); }
+        .search-wrapper input {
+            width: 100%; padding: 12px 12px 12px 40px;
+            border: 1px solid #d1d5db; border-radius: 8px;
+            font-size: 0.95rem; outline: none; transition: border 0.2s;
+        }
+        .search-wrapper input:focus { border-color: var(--primary); }
+
+        .sort-btn {
+            padding: 0 15px; background: white; border: 1px solid #d1d5db;
+            border-radius: 8px; color: var(--text-main); font-weight: 600; cursor: pointer;
+            transition: all 0.2s; display: flex; align-items: center; gap: 5px;
+        }
+        .sort-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        /* LISTA */
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            border-left: 5px solid transparent;
+            transition: transform 0.2s;
+        }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+
+        .card.completed { border-left-color: var(--success); }
+        .card.partial { border-left-color: var(--warning); }
+        .card.pending { border-left-color: var(--danger); }
+
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .user-name { font-weight: 700; font-size: 1.1rem; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+        .user-date { font-size: 0.8rem; color: var(--text-light); display: block; font-weight: 400; margin-top: 2px; }
+        .percent-badge { font-size: 1.2rem; font-weight: 800; }
+
+        .amounts-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px; }
+        .amt-paid { font-weight: 700; color: var(--text-main); }
+        .amt-goal { color: var(--text-light); }
+
+        .card-progress-bg { background: #f3f4f6; height: 8px; border-radius: 4px; overflow: hidden; }
+        .card-progress-fill { height: 100%; width: 0%; transition: width 1s ease; border-radius: 4px; }
+
+        /* Text Colors */
+        .text-success { color: var(--success); }
+        .text-warning { color: var(--warning); }
+        .text-danger { color: var(--danger); }
+        .text-primary { color: var(--primary); }
+
+        /* Responsive Math Row */
+        @media (max-width: 600px) {
+            .math-row { flex-direction: column; gap: 5px; }
+            .stat-box { width: 100%; }
+            .operator { transform: rotate(90deg); margin: 5px 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Control de Aportaciones 🚀</h1>
+        <p class="date" id="current-date"></p>
+    </header>
+
+    <div class="dashboard">
+        <div class="math-row">
+            <div class="stat-box">
+                <span class="stat-label">Recaudado Bruto</span>
+                <span class="stat-value text-success" id="total-collected">0€</span>
+                <span class="stat-sub">Total ingresos</span>
+            </div>
+
+            <div class="operator"><i class="fa-solid fa-minus"></i></div>
+
+            <div class="stat-box expense-box">
+                <span class="stat-label text-danger">Gastos</span>
+                <span class="stat-value text-danger" id="total-expenses">0€</span>
+                <span class="stat-sub" id="expenses-desc">Cesta Navidad</span>
+            </div>
+
+            <div class="operator"><i class="fa-solid fa-equals"></i></div>
+
+            <div class="stat-box main">
+                <span class="stat-label text-primary">Disponible Real</span>
+                <span class="stat-value text-primary" id="net-available">0€</span>
+                <span class="stat-sub">En caja</span>
+            </div>
+        </div>
+
+        <div class="global-progress-container">
+            <div class="progress-text">
+                <span id="global-percent-text">0% de la Meta</span>
+                <span id="global-goal-text">Meta: 0€</span>
+            </div>
+            <div class="p-bar-bg">
+                <div class="p-bar-fill" id="global-bar"></div>
+            </div>
+            <div style="text-align: center; margin-top: 10px; font-size: 0.9rem; color: var(--text-light);">
+                Faltan <strong id="amount-remaining">0€</strong> para llegar al objetivo final.
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <div class="search-wrapper">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="searchInput" placeholder="Buscar nombre..." onkeyup="filterData()">
+        </div>
+        <button class="sort-btn active" onclick="sortData('default')" id="btn-default">Auto</button>
+        <button class="sort-btn" onclick="sortData('amount')" id="btn-amount">Mayor €</button>
+    </div>
+
+    <div id="list-container"></div>
+
+    <div style="text-align: center; margin-top: 40px; font-size: 0.8rem; color: #aaa;">
+        <p>Datos actualizados automáticamente</p>
+    </div>
+</div>
+
+<script>
+    // --- DATOS ---
+    const contributors = [
+        { name: "Mario y Natalia", goal: 400, paid: 80, date: "03/11/2025" },
+        { name: "Clara", goal: 200, paid: 200, date: "02/10/2025" },
+        { name: "Guillermo y Angela", goal: 400, paid: 80, date: "03/11/2025" },
+        { name: "Inma y Cristobal", goal: 400, paid: 80, date: "03/11/2025" },
+        { name: "Elia y Diego", goal: 400, paid: 80, date: "03/11/2025" },
+        { name: "Irene y Tomás", goal: 400, paid: 120, date: "03/11/2025" },
+        { name: "FranSisco", goal: 200, paid: 20, date: "08/10/2025" },
+        { name: "Angel y Tamara", goal: 400, paid: 40, date: "21/10/2025" },
+        { name: "Maria", goal: 200, paid: 20, date: "03/11/2025" },
+        { name: "Pablo y Hassy", goal: 400, paid: 100, date: "23/11/2025" },
+        { name: "Sergio Doctor", goal: 200, paid: 0, date: "-" },
+        { name: "Rubia y Alberto", goal: 400, paid: 0, date: "-" }
+    ];
+
+    // --- GASTOS CONFIG ---
+    const EXPENSES = 22;
+    const EXPENSES_DESC = "Cesta Navidad Asoc.";
+
+    let currentData = [...contributors];
+
+    // --- INICIALIZACIÓN ---
+    document.addEventListener("DOMContentLoaded", () => {
+        // Poner fecha de hoy
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('current-date').innerText = "Actualizado: " + new Date().toLocaleDateString('es-ES', options);
+        
+        // Config gastos UI
+        document.getElementById('total-expenses').innerText = EXPENSES + "€";
+        document.getElementById('expenses-desc').innerText = EXPENSES_DESC;
+
+        updateDashboard();
+        sortData('default'); // Render inicial ordenado
+    });
+
+    // --- LÓGICA DEL DASHBOARD ---
+    function updateDashboard() {
+        // 1. Cálculos
+        const totalCollected = contributors.reduce((acc, curr) => acc + curr.paid, 0);
+        const totalGoal = contributors.reduce((acc, curr) => acc + curr.goal, 0);
+        const netAvailable = totalCollected - EXPENSES;
+        const remainingToGoal = totalGoal - netAvailable;
+        
+        // Porcentaje real basado en lo disponible vs meta
+        const globalPercent = Math.max(0, (netAvailable / totalGoal) * 100);
+
+        // 2. Actualizar DOM
+        animateValue("total-collected", totalCollected);
+        animateValue("net-available", netAvailable);
+        animateValue("amount-remaining", remainingToGoal);
+
+        document.getElementById('global-goal-text').innerText = `Meta Total: ${totalGoal}€`;
+        document.getElementById('global-percent-text').innerText = `${globalPercent.toFixed(1)}% Completado (Neto)`;
+        
+        // Barra de progreso
+        setTimeout(() => {
+            document.getElementById('global-bar').style.width = `${globalPercent}%`;
+        }, 300);
+    }
+
+    // --- RENDERIZADO DE LISTA ---
+    function renderList(data) {
+        const container = document.getElementById('list-container');
+        container.innerHTML = '';
+
+        data.forEach(item => {
+            const percent = (item.paid / item.goal) * 100;
+            const isComplete = percent >= 100;
+            const isZero = item.paid === 0;
+            
+            // Determinar estilos
+            let statusClass = 'partial';
+            let colorClass = 'text-warning';
+            let barColor = 'var(--warning)';
+            let icon = '';
+
+            if (isComplete) {
+                statusClass = 'completed';
+                colorClass = 'text-success';
+                barColor = 'var(--success)';
+                icon = '<i class="fa-solid fa-circle-check text-success"></i>';
+            } else if (isZero) {
+                statusClass = 'pending';
+                colorClass = 'text-danger';
+                barColor = 'var(--danger)';
+                icon = '<i class="fa-solid fa-circle-exclamation text-danger" style="opacity:0.5"></i>';
+            }
+
+            // HTML de la tarjeta
+            const html = `
+                <div class="card ${statusClass}">
+                    <div class="card-header">
+                        <div>
+                            <div class="user-name">${item.name} ${icon}</div>
+                            <span class="user-date"><i class="fa-regular fa-calendar"></i> ${item.date === '-' ? 'Pendiente' : item.date}</span>
+                        </div>
+                        <div class="percent-badge ${colorClass}">${percent.toFixed(0)}%</div>
+                    </div>
+                    
+                    <div class="amounts-row">
+                        <span class="amt-paid">${item.paid}€ aportados</span>
+                        <span class="amt-goal">Meta: ${item.goal}€</span>
+                    </div>
+
+                    <div class="card-progress-bg">
+                        <div class="card-progress-fill" style="background-color: ${barColor}; width: 0%" data-width="${percent}%"></div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML += html;
+        });
+
+        // Trigger animación barras
+        setTimeout(() => {
+            document.querySelectorAll('.card-progress-fill').forEach(el => {
+                el.style.width = el.getAttribute('data-width');
+            });
+        }, 100);
+    }
+
+    // --- FILTROS Y ORDEN ---
+    function filterData() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        currentData = contributors.filter(item => item.name.toLowerCase().includes(query));
+        renderList(currentData);
+    }
+
+    function sortData(type) {
+        // Botones UI
+        document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(`btn-${type}`).classList.add('active');
+
+        if (type === 'default') {
+            // Orden: Completados primero, luego por % pagado descendente
+            currentData.sort((a, b) => {
+                const pa = a.paid / a.goal;
+                const pb = b.paid / b.goal;
+                return pb - pa;
+            });
+        } else if (type === 'amount') {
+            currentData.sort((a, b) => b.paid - a.paid);
+        }
+
+        renderList(currentData);
+    }
+
+    // --- UTILIDADES ---
+    function animateValue(id, end) {
+        const obj = document.getElementById(id);
+        const start = 0;
+        const duration = 1000;
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            obj.innerHTML = Math.floor(progress * (end - start) + start) + "€";
+            if (progress < 1) window.requestAnimationFrame(step);
+        };
+        window.requestAnimationFrame(step);
+    }
+</script>
+
+</body>
+</html>
