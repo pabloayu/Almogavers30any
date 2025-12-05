@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>App de Fondos 📱</title>
+    <title>Fondos & Historial 📱</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -11,15 +11,14 @@
         :root {
             --primary: #4f46e5;
             --primary-dark: #3730a3;
-            --accent: #818cf8;
             --bg-app: #f8fafc;
             --surface: #ffffff;
             --success: #10b981;
+            --warning: #f59e0b;
             --danger: #ef4444;
             --text-main: #0f172a;
             --text-muted: #64748b;
-            --shadow-soft: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
-            --shadow-card: 0 10px 15px -3px rgba(79, 70, 229, 0.2);
+            --shadow-card: 0 10px 15px -3px rgba(79, 70, 229, 0.15);
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -28,342 +27,387 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg-app);
             color: var(--text-main);
-            margin: 0;
-            padding: 0;
-            padding-bottom: 90px; /* Espacio para el nav inferior */
+            margin: 0; padding: 0;
+            padding-bottom: 40px;
         }
 
-        /* HEADER APP */
-        .app-header {
-            padding: 20px 20px 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .app-title { font-size: 1.2rem; font-weight: 800; color: var(--text-main); }
-        .app-badge { 
-            background: #e0e7ff; color: var(--primary); 
-            padding: 4px 12px; border-radius: 20px; 
-            font-size: 0.75rem; font-weight: 700; 
-        }
-
-        /* TARJETA DE CRÉDITO (RESUMEN) */
-        .summary-container { padding: 10px 20px 25px 20px; }
-        .credit-card {
+        /* HEADER & RESUMEN */
+        .header-bg {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            border-radius: 24px;
-            padding: 25px;
+            padding: 30px 20px 80px 20px;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
             color: white;
-            box-shadow: var(--shadow-card);
-            position: relative;
-            overflow: hidden;
+            text-align: center;
         }
         
-        /* Círculos decorativos fondo */
-        .circle-bg { position: absolute; border-radius: 50%; background: white; opacity: 0.1; }
-        .c1 { width: 150px; height: 150px; top: -50px; right: -50px; }
-        .c2 { width: 100px; height: 100px; bottom: -30px; left: -20px; }
+        .app-title { font-size: 1.1rem; opacity: 0.9; font-weight: 600; margin-bottom: 5px; }
+        .big-total { font-size: 2.8rem; font-weight: 800; letter-spacing: -1px; }
+        .net-label { font-size: 0.9rem; opacity: 0.8; background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; }
 
-        .card-label { font-size: 0.8rem; opacity: 0.8; font-weight: 500; margin-bottom: 5px; display: block; }
-        .card-balance { font-size: 2.2rem; font-weight: 800; margin-bottom: 20px; letter-spacing: -1px; }
-        
-        .card-row { display: flex; justify-content: space-between; margin-top: 10px; }
-        .card-stat h4 { margin: 0; font-size: 0.75rem; opacity: 0.8; font-weight: 500; }
-        .card-stat p { margin: 2px 0 0 0; font-size: 1rem; font-weight: 700; }
-        .expense-stat { color: #fecaca; } /* Rojo claro para gastos */
+        .stats-float {
+            display: flex; gap: 10px; padding: 0 20px; margin-top: -50px; margin-bottom: 25px;
+        }
+        .stat-card {
+            flex: 1; background: white; padding: 15px; border-radius: 16px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05); text-align: center;
+        }
+        .stat-val { font-weight: 800; font-size: 1.1rem; display: block; }
+        .stat-lbl { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
 
-        /* BARRA DE PROGRESO EN TARJETA */
-        .card-progress { margin-top: 15px; }
-        .cp-text { display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 5px; opacity: 0.9; }
-        .cp-bar-bg { background: rgba(255,255,255,0.2); height: 6px; border-radius: 3px; overflow: hidden; }
-        .cp-bar-fill { background: #4ade80; height: 100%; width: 0%; transition: width 1s ease; }
-
-        /* LISTA DE TRANSACCIONES */
-        .list-header { padding: 0 20px; margin-bottom: 10px; font-size: 1rem; font-weight: 700; }
+        /* LISTA */
         .list-container { padding: 0 20px; }
+        .section-title { font-size: 1.1rem; font-weight: 800; margin-bottom: 15px; color: var(--text-main); }
 
-        .user-item {
-            background: var(--surface);
-            border-radius: 16px;
-            padding: 15px;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            box-shadow: var(--shadow-soft);
-            transition: transform 0.1s;
+        .user-card {
+            background: white; border-radius: 16px; padding: 18px; margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03); transition: transform 0.1s;
+            position: relative; overflow: hidden; cursor: pointer;
+            border: 1px solid transparent;
         }
-        .user-item:active { transform: scale(0.98); }
-
+        .user-card:active { transform: scale(0.98); background: #fdfdfd; }
+        
+        .card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .user-info { display: flex; align-items: center; gap: 12px; }
+        
         .avatar {
-            width: 45px; height: 45px;
+            width: 48px; height: 48px; border-radius: 14px;
             background: #f1f5f9; color: var(--primary);
-            border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: 0.9rem;
-            margin-right: 15px;
-            flex-shrink: 0;
+            font-weight: 700; font-size: 1rem; flex-shrink: 0;
         }
-        .avatar.done { background: #dcfce7; color: #15803d; }
-        .avatar.zero { background: #fee2e2; color: #b91c1c; }
+        .avatar.done { background: #dcfce7; color: #166534; }
+        .avatar.zero { background: #fee2e2; color: #991b1b; }
 
-        .info { flex-grow: 1; }
-        .name { font-weight: 700; font-size: 0.95rem; display: block; margin-bottom: 2px; }
-        .date { font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+        .names h3 { margin: 0; font-size: 1rem; font-weight: 700; }
+        .names p { margin: 2px 0 0 0; font-size: 0.75rem; color: var(--text-muted); }
 
-        .amount { text-align: right; }
-        .money { font-weight: 800; font-size: 1rem; display: block; color: var(--text-main); }
-        .percent { font-size: 0.75rem; font-weight: 600; padding: 2px 6px; border-radius: 6px; display: inline-block; margin-top: 2px; }
+        .money-summary { text-align: right; }
+        .current-money { display: block; font-size: 1.1rem; font-weight: 800; color: var(--text-main); }
+        .goal-money { font-size: 0.75rem; color: var(--text-muted); }
+
+        .progress-container { height: 8px; background: #f1f5f9; border-radius: 4px; overflow: hidden; position: relative; }
+        .progress-bar { height: 100%; border-radius: 4px; transition: width 1s ease; }
         
-        .p-green { background: #dcfce7; color: #15803d; }
-        .p-orange { background: #ffedd5; color: #c2410c; }
-        .p-red { background: #fee2e2; color: #b91c1c; }
+        .tap-hint { font-size: 0.7rem; color: var(--primary); text-align: center; margin-top: 10px; font-weight: 600; opacity: 0; transition: opacity 0.3s; }
+        .user-card:hover .tap-hint { opacity: 1; }
 
-        /* BOTTOM NAV (FILTROS) */
-        .bottom-nav {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            background: var(--surface);
-            padding: 8px;
-            border-radius: 50px;
-            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.15);
-            display: flex; gap: 5px;
-            z-index: 100;
-            width: 90%; max-width: 400px;
-            justify-content: space-between;
+        /* MODAL (DETALLE) */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 999;
+            opacity: 0; visibility: hidden; transition: all 0.3s;
+            display: flex; align-items: flex-end; /* Bottom sheet */
         }
+        .modal-overlay.open { opacity: 1; visibility: visible; }
 
-        .nav-btn {
-            border: none; background: transparent;
-            flex: 1; padding: 12px 0;
-            border-radius: 25px;
-            color: var(--text-muted);
-            font-size: 0.8rem; font-weight: 600;
-            display: flex; flex-direction: column; align-items: center; gap: 4px;
-            cursor: pointer; transition: all 0.2s;
+        .modal-content {
+            background: #fff; width: 100%; max-width: 600px; margin: 0 auto;
+            border-top-left-radius: 25px; border-top-right-radius: 25px;
+            padding: 30px 25px;
+            transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            max-height: 85vh; overflow-y: auto;
         }
-        .nav-btn i { font-size: 1.1rem; }
+        .modal-overlay.open .modal-content { transform: translateY(0); }
+
+        .modal-header { text-align: center; margin-bottom: 25px; }
+        .m-avatar { 
+            width: 70px; height: 70px; margin: 0 auto 15px auto; 
+            font-size: 1.5rem; border-radius: 20px; 
+        }
+        .m-name { font-size: 1.4rem; font-weight: 800; margin-bottom: 5px; }
+        .m-stats { font-size: 0.9rem; color: var(--text-muted); }
+        .m-total { font-size: 2rem; font-weight: 800; color: var(--primary); margin: 10px 0; }
         
-        .nav-btn.active {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        .history-list { position: relative; padding-left: 20px; border-left: 2px solid #e2e8f0; margin-left: 10px; }
+        .history-item { position: relative; margin-bottom: 25px; padding-left: 20px; }
+        .history-item::before {
+            content: ''; position: absolute; left: -26px; top: 5px;
+            width: 14px; height: 14px; background: white; border: 3px solid var(--primary);
+            border-radius: 50%;
         }
+        .h-date { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); }
+        .h-concept { font-size: 1rem; font-weight: 700; color: var(--text-main); margin: 3px 0; }
+        .h-amount { font-size: 1rem; font-weight: 800; color: var(--success); }
 
-        /* Buscador flotante */
-        .search-float {
-            padding: 0 20px; margin-bottom: 20px;
+        .close-btn {
+            background: #f1f5f9; border: none; width: 40px; height: 40px; border-radius: 50%;
+            position: absolute; top: 20px; right: 20px; cursor: pointer; font-size: 1.2rem; color: var(--text-main);
         }
-        .search-bar {
-            width: 100%; background: white; border: none;
-            padding: 15px 20px; border-radius: 14px;
-            box-shadow: var(--shadow-soft);
-            font-family: inherit; font-size: 0.95rem;
-            outline: none; color: var(--text-main);
-        }
-        .search-bar::placeholder { color: #cbd5e1; }
 
     </style>
 </head>
 <body>
 
-    <header class="app-header">
-        <div class="app-title">MiHucha App 💸</div>
-        <div class="app-badge" id="date-badge">Hoy</div>
-    </header>
+    <div class="header-bg">
+        <div class="app-title">💰 Estado de Cuentas</div>
+        <div class="big-total" id="global-net">0€</div>
+        <span class="net-label">Disponible en Caja</span>
+    </div>
 
-    <div class="summary-container">
-        <div class="credit-card">
-            <div class="circle-bg c1"></div>
-            <div class="circle-bg c2"></div>
+    <div class="stats-float">
+        <div class="stat-card">
+            <span class="stat-val text-success" id="global-collected" style="color:var(--success)">0€</span>
+            <span class="stat-lbl">Recaudado</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-val text-danger" id="global-expenses" style="color:var(--danger)">-22€</span>
+            <span class="stat-lbl">Gastos</span>
+        </div>
+    </div>
+
+    <div class="list-container">
+        <div class="section-title">Participantes</div>
+        <div id="cards-wrapper">
+            </div>
+    </div>
+
+    <div class="modal-overlay" id="detailModal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
             
-            <span class="card-label">Saldo Disponible (Neto)</span>
-            <div class="card-balance" id="net-available">0€</div>
-
-            <div class="card-row">
-                <div class="card-stat">
-                    <h4>Recaudado</h4>
-                    <p id="total-collected">0€</p>
-                </div>
-                <div class="card-stat expense-stat">
-                    <h4>Gastos</h4>
-                    <p id="total-expenses">-0€</p>
-                </div>
-                <div class="card-stat">
-                    <h4>Meta Total</h4>
-                    <p id="total-goal">0€</p>
+            <div class="modal-header">
+                <div class="avatar m-avatar" id="m-avatar">AB</div>
+                <div class="m-name" id="m-name">Nombre</div>
+                <div class="m-total" id="m-total">0€</div>
+                <div class="m-stats">
+                    Meta: <span id="m-goal">400€</span> • Restan: <span id="m-left">0€</span>
                 </div>
             </div>
 
-            <div class="card-progress">
-                <div class="cp-text">
-                    <span>Progreso Global</span>
-                    <span id="global-percent">0%</span>
+            <div class="section-title" style="font-size:1rem; margin-bottom:20px;">Historial de Pagos</div>
+            <div class="history-list" id="m-history">
                 </div>
-                <div class="cp-bar-bg">
-                    <div class="cp-bar-fill" id="global-bar"></div>
-                </div>
-            </div>
         </div>
-    </div>
-
-    <div class="search-float">
-        <input type="text" class="search-bar" id="searchInput" placeholder="🔍  Buscar participante..." onkeyup="filterData()">
-    </div>
-
-    <div class="list-header">Participantes (<span id="count-users">0</span>)</div>
-    <div class="list-container" id="list-container">
-        </div>
-
-    <div class="bottom-nav">
-        <button class="nav-btn active" onclick="sortData('default')" id="btn-default">
-            <i class="fa-solid fa-list"></i>
-            <span>Todos</span>
-        </button>
-        <button class="nav-btn" onclick="sortData('amount')" id="btn-amount">
-            <i class="fa-solid fa-trophy"></i>
-            <span>Ranking</span>
-        </button>
-        <button class="nav-btn" onclick="sortData('pending')" id="btn-pending">
-            <i class="fa-solid fa-clock"></i>
-            <span>Pendientes</span>
-        </button>
     </div>
 
 <script>
-    // --- DATOS ACTUALIZADOS ---
-    const contributors = [
-        { name: "Mario y Natalia", goal: 400, paid: 120, date: "01/12/2025" },
-        { name: "Clara", goal: 200, paid: 200, date: "02/10/2025" },
-        { name: "Guillermo y Angela", goal: 400, paid: 120, date: "01/12/2025" },
-        { name: "Inma y Cristobal", goal: 400, paid: 80, date: "03/11/2025" },
-        { name: "Elia y Diego", goal: 400, paid: 120, date: "05/12/2025" },
-        { name: "Irene y Tomás", goal: 400, paid: 120, date: "03/11/2025" },
-        { name: "FranSisco", goal: 200, paid: 20, date: "08/10/2025" },
-        { name: "Angel y Tamara", goal: 400, paid: 80, date: "01/12/2025" },
-        { name: "Maria", goal: 200, paid: 20, date: "03/11/2025" },
-        { name: "Pablo y Hassy", goal: 400, paid: 100, date: "23/11/2025" },
-        { name: "Rubia y Alberto", goal: 400, paid: 100, date: "01/12/2025" },
-        { name: "Sergio Doctor", goal: 200, paid: 0, date: "-" }
+    // --- DATOS CON HISTORIAL COMPLETO ---
+    const rawContributors = [
+        { 
+            name: "Mario y Natalia", goal: 400, 
+            history: [
+                { date: "02/10/2025", concept: "Pago de Octubre", amount: 40 },
+                { date: "03/11/2025", concept: "Pago de Noviembre", amount: 40 },
+                { date: "01/12/2025", concept: "Pago Diciembre", amount: 40 }
+            ]
+        },
+        { 
+            name: "Clara", goal: 200, 
+            history: [
+                { date: "02/10/2025", concept: "Pago Total", amount: 200 }
+            ]
+        },
+        { 
+            name: "Guillermo y Angela", goal: 400, 
+            history: [
+                { date: "02/10/2025", concept: "Pago de Octubre", amount: 40 },
+                { date: "03/11/2025", concept: "Pago de Noviembre", amount: 40 },
+                { date: "01/12/2025", concept: "Pago Diciembre", amount: 40 }
+            ]
+        },
+        { 
+            name: "Inma y Cristobal", goal: 400, 
+            history: [
+                { date: "02/10/2025", concept: "Pago de Octubre", amount: 40 },
+                { date: "03/11/2025", concept: "Pago de Noviembre", amount: 40 }
+            ]
+        },
+        { 
+            name: "Elia y Diego", goal: 400, 
+            history: [
+                { date: "03/10/2025", concept: "Pago de Octubre", amount: 40 },
+                { date: "03/11/2025", concept: "Pago de Noviembre", amount: 40 },
+                { date: "05/12/2025", concept: "Pago Diciembre", amount: 40 }
+            ]
+        },
+        { 
+            name: "Irene y Tomás", goal: 400, 
+            history: [
+                { date: "05/10/2025", concept: "Pago de Octubre", amount: 40 },
+                { date: "03/11/2025", concept: "Pago de Noviembre", amount: 80 }
+            ]
+        },
+        { 
+            name: "FranSisco", goal: 200, 
+            history: [
+                { date: "08/10/2025", concept: "Pago de Octubre", amount: 20 }
+            ]
+        },
+        { 
+            name: "Angel y Tamara", goal: 400, 
+            history: [
+                { date: "21/10/2025", concept: "Pago de Octubre", amount: 40 },
+                { date: "01/12/2025", concept: "Pago Diciembre", amount: 40 }
+            ]
+        },
+        { 
+            name: "Maria", goal: 200, 
+            history: [
+                { date: "03/11/2025", concept: "Pago de Noviembre", amount: 20 }
+            ]
+        },
+        { 
+            name: "Pablo y Hassy", goal: 400, 
+            history: [
+                { date: "23/11/2025", concept: "Pago de Noviembre", amount: 100 }
+            ]
+        },
+        { 
+            name: "Rubia y Alberto", goal: 400, 
+            history: [
+                { date: "01/12/2025", concept: "Pago Diciembre", amount: 100 }
+            ]
+        },
+        { 
+            name: "Sergio Doctor", goal: 200, 
+            history: [] // Sin pagos aún
+        }
     ];
 
     const EXPENSES = 22;
-    let currentData = [...contributors];
 
-    // --- INICIALIZACIÓN ---
-    document.addEventListener("DOMContentLoaded", () => {
-        const d = new Date();
-        document.getElementById('date-badge').innerText = `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
+    // --- PROCESAMIENTO DE DATOS ---
+    // Calculamos totales y fechas automáticamente basados en el historial
+    const data = rawContributors.map((c, index) => {
+        const totalPaid = c.history.reduce((acc, curr) => acc + curr.amount, 0);
+        // Ordenar historial por fecha (reciente primero) para coger la última
+        // Formato fecha es DD/MM/YYYY, simple string sort podría fallar, pero para display visual "last" basta coger el último del array si está ordenado cronológicamente.
+        // Asumimos orden de entrada o invertimos.
+        const lastPayment = c.history.length > 0 ? c.history[c.history.length - 1].date : "-";
         
-        updateSummary();
-        sortData('default');
+        return {
+            ...c,
+            id: index,
+            paid: totalPaid,
+            percent: (totalPaid / c.goal) * 100,
+            lastDate: lastPayment,
+            // Invertimos historial para mostrar el más reciente arriba en el modal
+            reversedHistory: [...c.history].reverse() 
+        };
     });
 
-    // --- LÓGICA DE RESUMEN ---
-    function updateSummary() {
-        const totalCollected = contributors.reduce((acc, curr) => acc + curr.paid, 0);
-        const totalGoal = contributors.reduce((acc, curr) => acc + curr.goal, 0);
+    // Ordenar principal: Completados -> Mayor Cantidad
+    data.sort((a, b) => {
+        const pa = a.paid / a.goal;
+        const pb = b.paid / b.goal;
+        if (pa !== pb) return pb - pa;
+        return b.paid - a.paid;
+    });
+
+    // --- RENDERIZADO ---
+    function init() {
+        renderGlobalStats();
+        renderCards();
+    }
+
+    function renderGlobalStats() {
+        const totalCollected = data.reduce((acc, curr) => acc + curr.paid, 0);
         const netAvailable = totalCollected - EXPENSES;
-        const globalPercent = Math.max(0, (netAvailable / totalGoal) * 100);
-
-        // Animación de números
-        document.getElementById('total-collected').innerText = totalCollected + "€";
-        document.getElementById('total-expenses').innerText = "-" + EXPENSES + "€";
-        document.getElementById('total-goal').innerText = totalGoal + "€";
-        document.getElementById('net-available').innerText = netAvailable + "€";
         
-        document.getElementById('global-percent').innerText = globalPercent.toFixed(0) + "%";
-        setTimeout(() => {
-            document.getElementById('global-bar').style.width = globalPercent + "%";
-        }, 300);
+        document.getElementById('global-net').innerText = netAvailable + "€";
+        document.getElementById('global-collected').innerText = totalCollected + "€";
     }
 
-    // --- GENERADOR DE INICIALES ---
     function getInitials(name) {
-        const words = name.split(' ');
-        if (name.includes(' y ')) {
-            // Caso parejas "Mario y Natalia" -> "M&N"
-            const parts = name.split(' y ');
+        if (name.includes(" y ")) {
+            const parts = name.split(" y ");
             return parts[0][0] + "&" + parts[1][0];
-        } else if (words.length > 1) {
-             return words[0][0] + words[1][0];
         }
-        return words[0].substring(0,2).toUpperCase();
+        const parts = name.split(" ");
+        if (parts.length > 1) return parts[0][0] + parts[1][0];
+        return name.substring(0,2).toUpperCase();
     }
 
-    // --- RENDER ---
-    function renderList(data) {
-        const container = document.getElementById('list-container');
-        document.getElementById('count-users').innerText = data.length;
-        container.innerHTML = '';
+    function renderCards() {
+        const container = document.getElementById('cards-wrapper');
+        container.innerHTML = "";
 
-        data.forEach(item => {
-            const percent = (item.paid / item.goal) * 100;
-            const isComplete = percent >= 100;
-            const isZero = item.paid === 0;
+        data.forEach(user => {
+            const isComplete = user.paid >= user.goal;
+            const isZero = user.paid === 0;
             
-            // Clases dinámicas
-            let avatarClass = '';
-            let pillClass = 'p-orange';
+            let color = "var(--warning)";
+            let avatarClass = "avatar";
             
-            if (isComplete) { avatarClass = 'done'; pillClass = 'p-green'; }
-            if (isZero) { avatarClass = 'zero'; pillClass = 'p-red'; }
-
-            const initials = getInitials(item.name);
+            if (isComplete) {
+                color = "var(--success)";
+                avatarClass += " done";
+            } else if (isZero) {
+                color = "var(--danger)";
+                avatarClass += " zero";
+            }
 
             const html = `
-                <div class="user-item">
-                    <div class="avatar ${avatarClass}">${initials}</div>
-                    <div class="info">
-                        <span class="name">${item.name}</span>
-                        <span class="date"><i class="fa-regular fa-clock"></i> ${item.date}</span>
+                <div class="user-card" onclick="openDetail(${user.id})">
+                    <div class="card-top">
+                        <div class="user-info">
+                            <div class="${avatarClass}">${getInitials(user.name)}</div>
+                            <div class="names">
+                                <h3>${user.name}</h3>
+                                <p><i class="fa-regular fa-clock"></i> Último: ${user.lastDate}</p>
+                            </div>
+                        </div>
+                        <div class="money-summary">
+                            <span class="current-money">${user.paid}€</span>
+                            <span class="goal-money">de ${user.goal}€</span>
+                        </div>
                     </div>
-                    <div class="amount">
-                        <span class="money">${item.paid}€</span>
-                        <span class="percent ${pillClass}">${percent.toFixed(0)}%</span>
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: ${user.percent}%; background: ${color}"></div>
                     </div>
+                    <div class="tap-hint">Ver historial</div>
                 </div>
             `;
             container.innerHTML += html;
         });
     }
 
-    // --- FILTROS ---
-    function filterData() {
-        const query = document.getElementById('searchInput').value.toLowerCase();
-        currentData = contributors.filter(item => item.name.toLowerCase().includes(query));
-        renderList(currentData);
-    }
+    // --- MODAL LOGIC ---
+    function openDetail(id) {
+        const user = data.find(u => u.id === id);
+        if (!user) return;
 
-    function sortData(type) {
-        // Estilos botones
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(`btn-${type}`).classList.add('active');
+        // Populate Modal
+        document.getElementById('m-name').innerText = user.name;
+        document.getElementById('m-total').innerText = user.paid + "€";
+        document.getElementById('m-goal').innerText = user.goal + "€";
+        document.getElementById('m-left').innerText = (user.goal - user.paid) + "€";
+        
+        const avatarEl = document.getElementById('m-avatar');
+        avatarEl.innerText = getInitials(user.name);
+        avatarEl.className = "avatar m-avatar " + (user.paid >= user.goal ? "done" : (user.paid === 0 ? "zero" : ""));
 
-        // Reset data base
-        let tempData = [...contributors];
+        // Render History
+        const historyContainer = document.getElementById('m-history');
+        historyContainer.innerHTML = "";
 
-        if (type === 'default') {
-            // Orden por defecto: Completados arriba, luego mayor aporte
-            tempData.sort((a, b) => {
-                const pa = a.paid / a.goal;
-                const pb = b.paid / b.goal;
-                return pb - pa;
+        if (user.reversedHistory.length === 0) {
+            historyContainer.innerHTML = "<p style='color:#94a3b8; font-style:italic;'>No hay pagos registrados aún.</p>";
+        } else {
+            user.reversedHistory.forEach(h => {
+                historyContainer.innerHTML += `
+                    <div class="history-item">
+                        <div class="h-date">${h.date}</div>
+                        <div class="h-concept">${h.concept}</div>
+                        <div class="h-amount">+${h.amount}€</div>
+                    </div>
+                `;
             });
-        } else if (type === 'amount') {
-            // Ranking puro de dinero
-            tempData.sort((a, b) => b.paid - a.paid);
-        } else if (type === 'pending') {
-            // Filtrar solo los que NO han completado
-            tempData = tempData.filter(item => item.paid < item.goal);
-            tempData.sort((a, b) => a.paid - b.paid); // Menos han pagado primero
         }
 
-        currentData = tempData;
-        renderList(currentData);
-        
-        // Reset search si se cambia de tab
-        document.getElementById('searchInput').value = '';
+        document.getElementById('detailModal').classList.add('open');
     }
-</script>
 
+    function closeModal(event) {
+        // Si hay evento (click en overlay), cerramos. Si no (botón cerrar), también.
+        if (event && event.target !== event.currentTarget) return;
+        document.getElementById('detailModal').classList.remove('open');
+    }
+
+    // Start
+    init();
+
+</script>
 </body>
 </html>
