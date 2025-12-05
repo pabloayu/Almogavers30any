@@ -2,211 +2,234 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estado de Cuentas 📊</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>App de Fondos 📱</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --bg-color: #f3f4f6;
-            --card-bg: #ffffff;
             --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --accent: #818cf8;
+            --bg-app: #f8fafc;
+            --surface: #ffffff;
             --success: #10b981;
-            --warning: #f59e0b;
             --danger: #ef4444;
-            --expense: #dc2626;
-            --text-main: #111827;
-            --text-light: #6b7280;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --shadow-soft: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+            --shadow-card: 0 10px 15px -3px rgba(79, 70, 229, 0.2);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-app);
             color: var(--text-main);
-            padding: 20px;
-            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+            padding-bottom: 90px; /* Espacio para el nav inferior */
         }
 
-        .container { max-width: 900px; margin: 0 auto; }
+        /* HEADER APP */
+        .app-header {
+            padding: 20px 20px 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .app-title { font-size: 1.2rem; font-weight: 800; color: var(--text-main); }
+        .app-badge { 
+            background: #e0e7ff; color: var(--primary); 
+            padding: 4px 12px; border-radius: 20px; 
+            font-size: 0.75rem; font-weight: 700; 
+        }
 
-        /* HEADER */
-        header { text-align: center; margin-bottom: 30px; }
-        h1 { font-weight: 800; color: var(--primary); font-size: 1.8rem; }
-        p.date { color: var(--text-light); font-size: 0.9rem; margin-top: 5px; }
+        /* TARJETA DE CRÉDITO (RESUMEN) */
+        .summary-container { padding: 10px 20px 25px 20px; }
+        .credit-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 24px;
+            padding: 25px;
+            color: white;
+            box-shadow: var(--shadow-card);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Círculos decorativos fondo */
+        .circle-bg { position: absolute; border-radius: 50%; background: white; opacity: 0.1; }
+        .c1 { width: 150px; height: 150px; top: -50px; right: -50px; }
+        .c2 { width: 100px; height: 100px; bottom: -30px; left: -20px; }
 
-        /* DASHBOARD FINANCIERO */
-        .dashboard {
-            background: white;
+        .card-label { font-size: 0.8rem; opacity: 0.8; font-weight: 500; margin-bottom: 5px; display: block; }
+        .card-balance { font-size: 2.2rem; font-weight: 800; margin-bottom: 20px; letter-spacing: -1px; }
+        
+        .card-row { display: flex; justify-content: space-between; margin-top: 10px; }
+        .card-stat h4 { margin: 0; font-size: 0.75rem; opacity: 0.8; font-weight: 500; }
+        .card-stat p { margin: 2px 0 0 0; font-size: 1rem; font-weight: 700; }
+        .expense-stat { color: #fecaca; } /* Rojo claro para gastos */
+
+        /* BARRA DE PROGRESO EN TARJETA */
+        .card-progress { margin-top: 15px; }
+        .cp-text { display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 5px; opacity: 0.9; }
+        .cp-bar-bg { background: rgba(255,255,255,0.2); height: 6px; border-radius: 3px; overflow: hidden; }
+        .cp-bar-fill { background: #4ade80; height: 100%; width: 0%; transition: width 1s ease; }
+
+        /* LISTA DE TRANSACCIONES */
+        .list-header { padding: 0 20px; margin-bottom: 10px; font-size: 1rem; font-weight: 700; }
+        .list-container { padding: 0 20px; }
+
+        .user-item {
+            background: var(--surface);
             border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-        }
-
-        .math-row {
+            padding: 15px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
+            box-shadow: var(--shadow-soft);
+            transition: transform 0.1s;
         }
+        .user-item:active { transform: scale(0.98); }
 
-        .stat-box {
-            background: #f9fafb;
-            border: 1px solid #e5e7eb;
+        .avatar {
+            width: 45px; height: 45px;
+            background: #f1f5f9; color: var(--primary);
             border-radius: 12px;
-            padding: 15px 20px;
-            text-align: center;
-            min-width: 140px;
-            flex: 1;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 0.9rem;
+            margin-right: 15px;
+            flex-shrink: 0;
         }
+        .avatar.done { background: #dcfce7; color: #15803d; }
+        .avatar.zero { background: #fee2e2; color: #b91c1c; }
 
-        .stat-box.main { background: #e0e7ff; border-color: #c7d2fe; }
-        .stat-box.expense-box { background: #fef2f2; border-color: #fecaca; }
+        .info { flex-grow: 1; }
+        .name { font-weight: 700; font-size: 0.95rem; display: block; margin-bottom: 2px; }
+        .date { font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+
+        .amount { text-align: right; }
+        .money { font-weight: 800; font-size: 1rem; display: block; color: var(--text-main); }
+        .percent { font-size: 0.75rem; font-weight: 600; padding: 2px 6px; border-radius: 6px; display: inline-block; margin-top: 2px; }
         
-        .stat-label { display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
-        .stat-value { display: block; font-size: 1.5rem; font-weight: 800; }
-        .stat-sub { display: block; font-size: 0.75rem; color: var(--text-light); margin-top: 2px; }
+        .p-green { background: #dcfce7; color: #15803d; }
+        .p-orange { background: #ffedd5; color: #c2410c; }
+        .p-red { background: #fee2e2; color: #b91c1c; }
 
-        .operator { font-size: 1.5rem; font-weight: bold; color: var(--text-light); padding: 0 5px; }
-
-        /* Global Progress */
-        .global-progress-container { text-align: center; padding: 0 10px; }
-        .progress-text { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; font-weight: 600; color: var(--text-light); }
-        .p-bar-bg { background: #e5e7eb; height: 12px; border-radius: 6px; overflow: hidden; }
-        .p-bar-fill { height: 100%; background: var(--primary); width: 0%; transition: width 1.5s ease-out; }
-
-        /* CONTROLS */
-        .controls { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .search-wrapper { flex-grow: 1; position: relative; }
-        .search-wrapper i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-light); }
-        .search-wrapper input {
-            width: 100%; padding: 12px 12px 12px 40px;
-            border: 1px solid #d1d5db; border-radius: 8px;
-            font-size: 0.95rem; outline: none; transition: border 0.2s;
+        /* BOTTOM NAV (FILTROS) */
+        .bottom-nav {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: var(--surface);
+            padding: 8px;
+            border-radius: 50px;
+            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.15);
+            display: flex; gap: 5px;
+            z-index: 100;
+            width: 90%; max-width: 400px;
+            justify-content: space-between;
         }
-        .search-wrapper input:focus { border-color: var(--primary); }
 
-        .sort-btn {
-            padding: 0 15px; background: white; border: 1px solid #d1d5db;
-            border-radius: 8px; color: var(--text-main); font-weight: 600; cursor: pointer;
-            transition: all 0.2s; display: flex; align-items: center; gap: 5px;
+        .nav-btn {
+            border: none; background: transparent;
+            flex: 1; padding: 12px 0;
+            border-radius: 25px;
+            color: var(--text-muted);
+            font-size: 0.8rem; font-weight: 600;
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            cursor: pointer; transition: all 0.2s;
         }
-        .sort-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-
-        /* LISTA */
-        .card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 15px 20px;
-            margin-bottom: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            display: flex;
-            flex-direction: column;
-            border-left: 5px solid transparent;
-            transition: transform 0.2s;
+        .nav-btn i { font-size: 1.1rem; }
+        
+        .nav-btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
         }
-        .card:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
 
-        .card.completed { border-left-color: var(--success); }
-        .card.partial { border-left-color: var(--warning); }
-        .card.pending { border-left-color: var(--danger); }
-
-        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-        .user-name { font-weight: 700; font-size: 1.1rem; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
-        .user-date { font-size: 0.8rem; color: var(--text-light); display: block; font-weight: 400; margin-top: 2px; }
-        .percent-badge { font-size: 1.2rem; font-weight: 800; }
-
-        .amounts-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px; }
-        .amt-paid { font-weight: 700; color: var(--text-main); }
-        .amt-goal { color: var(--text-light); }
-
-        .card-progress-bg { background: #f3f4f6; height: 8px; border-radius: 4px; overflow: hidden; }
-        .card-progress-fill { height: 100%; width: 0%; transition: width 1s ease; border-radius: 4px; }
-
-        /* Text Colors */
-        .text-success { color: var(--success); }
-        .text-warning { color: var(--warning); }
-        .text-danger { color: var(--danger); }
-        .text-primary { color: var(--primary); }
-
-        /* Responsive */
-        @media (max-width: 600px) {
-            .math-row { flex-direction: column; gap: 5px; }
-            .stat-box { width: 100%; }
-            .operator { transform: rotate(90deg); margin: 5px 0; }
+        /* Buscador flotante */
+        .search-float {
+            padding: 0 20px; margin-bottom: 20px;
         }
+        .search-bar {
+            width: 100%; background: white; border: none;
+            padding: 15px 20px; border-radius: 14px;
+            box-shadow: var(--shadow-soft);
+            font-family: inherit; font-size: 0.95rem;
+            outline: none; color: var(--text-main);
+        }
+        .search-bar::placeholder { color: #cbd5e1; }
+
     </style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <h1>Control de Aportaciones 🚀</h1>
-        <p class="date" id="current-date"></p>
+    <header class="app-header">
+        <div class="app-title">MiHucha App 💸</div>
+        <div class="app-badge" id="date-badge">Hoy</div>
     </header>
 
-    <div class="dashboard">
-        <div class="math-row">
-            <div class="stat-box">
-                <span class="stat-label">Recaudado Bruto</span>
-                <span class="stat-value text-success" id="total-collected">0€</span>
-                <span class="stat-sub">Total ingresos</span>
+    <div class="summary-container">
+        <div class="credit-card">
+            <div class="circle-bg c1"></div>
+            <div class="circle-bg c2"></div>
+            
+            <span class="card-label">Saldo Disponible (Neto)</span>
+            <div class="card-balance" id="net-available">0€</div>
+
+            <div class="card-row">
+                <div class="card-stat">
+                    <h4>Recaudado</h4>
+                    <p id="total-collected">0€</p>
+                </div>
+                <div class="card-stat expense-stat">
+                    <h4>Gastos</h4>
+                    <p id="total-expenses">-0€</p>
+                </div>
+                <div class="card-stat">
+                    <h4>Meta Total</h4>
+                    <p id="total-goal">0€</p>
+                </div>
             </div>
 
-            <div class="operator"><i class="fa-solid fa-minus"></i></div>
-
-            <div class="stat-box expense-box">
-                <span class="stat-label text-danger">Gastos</span>
-                <span class="stat-value text-danger" id="total-expenses">0€</span>
-                <span class="stat-sub" id="expenses-desc">Cesta Navidad</span>
-            </div>
-
-            <div class="operator"><i class="fa-solid fa-equals"></i></div>
-
-            <div class="stat-box main">
-                <span class="stat-label text-primary">Disponible Real</span>
-                <span class="stat-value text-primary" id="net-available">0€</span>
-                <span class="stat-sub">En caja</span>
-            </div>
-        </div>
-
-        <div class="global-progress-container">
-            <div class="progress-text">
-                <span id="global-percent-text">0% de la Meta</span>
-                <span id="global-goal-text">Meta: 0€</span>
-            </div>
-            <div class="p-bar-bg">
-                <div class="p-bar-fill" id="global-bar"></div>
-            </div>
-            <div style="text-align: center; margin-top: 10px; font-size: 0.9rem; color: var(--text-light);">
-                Faltan <strong id="amount-remaining">0€</strong> para llegar al objetivo final.
+            <div class="card-progress">
+                <div class="cp-text">
+                    <span>Progreso Global</span>
+                    <span id="global-percent">0%</span>
+                </div>
+                <div class="cp-bar-bg">
+                    <div class="cp-bar-fill" id="global-bar"></div>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="controls">
-        <div class="search-wrapper">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" id="searchInput" placeholder="Buscar nombre..." onkeyup="filterData()">
+    <div class="search-float">
+        <input type="text" class="search-bar" id="searchInput" placeholder="🔍  Buscar participante..." onkeyup="filterData()">
+    </div>
+
+    <div class="list-header">Participantes (<span id="count-users">0</span>)</div>
+    <div class="list-container" id="list-container">
         </div>
-        <button class="sort-btn active" onclick="sortData('default')" id="btn-default">Auto</button>
-        <button class="sort-btn" onclick="sortData('amount')" id="btn-amount">Mayor €</button>
-    </div>
 
-    <div id="list-container"></div>
-
-    <div style="text-align: center; margin-top: 40px; font-size: 0.8rem; color: #aaa;">
-        <p>Datos actualizados automáticamente</p>
+    <div class="bottom-nav">
+        <button class="nav-btn active" onclick="sortData('default')" id="btn-default">
+            <i class="fa-solid fa-list"></i>
+            <span>Todos</span>
+        </button>
+        <button class="nav-btn" onclick="sortData('amount')" id="btn-amount">
+            <i class="fa-solid fa-trophy"></i>
+            <span>Ranking</span>
+        </button>
+        <button class="nav-btn" onclick="sortData('pending')" id="btn-pending">
+            <i class="fa-solid fa-clock"></i>
+            <span>Pendientes</span>
+        </button>
     </div>
-</div>
 
 <script>
-    // --- DATOS ACTUALIZADOS (SUMADOS A FECHA 5/12/2025) ---
+    // --- DATOS ACTUALIZADOS ---
     const contributors = [
         { name: "Mario y Natalia", goal: 400, paid: 120, date: "01/12/2025" },
         { name: "Clara", goal: 200, paid: 200, date: "02/10/2025" },
@@ -222,48 +245,54 @@
         { name: "Sergio Doctor", goal: 200, paid: 0, date: "-" }
     ];
 
-    // --- GASTOS CONFIG ---
     const EXPENSES = 22;
-    const EXPENSES_DESC = "Cesta Navidad Asoc.";
-
     let currentData = [...contributors];
 
     // --- INICIALIZACIÓN ---
     document.addEventListener("DOMContentLoaded", () => {
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('current-date').innerText = "Actualizado: " + new Date().toLocaleDateString('es-ES', options);
+        const d = new Date();
+        document.getElementById('date-badge').innerText = `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
         
-        document.getElementById('total-expenses').innerText = EXPENSES + "€";
-        document.getElementById('expenses-desc').innerText = EXPENSES_DESC;
-
-        updateDashboard();
-        sortData('default'); 
+        updateSummary();
+        sortData('default');
     });
 
-    // --- LÓGICA DEL DASHBOARD ---
-    function updateDashboard() {
+    // --- LÓGICA DE RESUMEN ---
+    function updateSummary() {
         const totalCollected = contributors.reduce((acc, curr) => acc + curr.paid, 0);
         const totalGoal = contributors.reduce((acc, curr) => acc + curr.goal, 0);
         const netAvailable = totalCollected - EXPENSES;
-        const remainingToGoal = totalGoal - netAvailable;
-        
         const globalPercent = Math.max(0, (netAvailable / totalGoal) * 100);
 
-        animateValue("total-collected", totalCollected);
-        animateValue("net-available", netAvailable);
-        animateValue("amount-remaining", remainingToGoal);
-
-        document.getElementById('global-goal-text').innerText = `Meta Total: ${totalGoal}€`;
-        document.getElementById('global-percent-text').innerText = `${globalPercent.toFixed(1)}% Completado (Neto)`;
+        // Animación de números
+        document.getElementById('total-collected').innerText = totalCollected + "€";
+        document.getElementById('total-expenses').innerText = "-" + EXPENSES + "€";
+        document.getElementById('total-goal').innerText = totalGoal + "€";
+        document.getElementById('net-available').innerText = netAvailable + "€";
         
+        document.getElementById('global-percent').innerText = globalPercent.toFixed(0) + "%";
         setTimeout(() => {
-            document.getElementById('global-bar').style.width = `${globalPercent}%`;
+            document.getElementById('global-bar').style.width = globalPercent + "%";
         }, 300);
     }
 
-    // --- RENDERIZADO DE LISTA ---
+    // --- GENERADOR DE INICIALES ---
+    function getInitials(name) {
+        const words = name.split(' ');
+        if (name.includes(' y ')) {
+            // Caso parejas "Mario y Natalia" -> "M&N"
+            const parts = name.split(' y ');
+            return parts[0][0] + "&" + parts[1][0];
+        } else if (words.length > 1) {
+             return words[0][0] + words[1][0];
+        }
+        return words[0].substring(0,2).toUpperCase();
+    }
+
+    // --- RENDER ---
     function renderList(data) {
         const container = document.getElementById('list-container');
+        document.getElementById('count-users').innerText = data.length;
         container.innerHTML = '';
 
         data.forEach(item => {
@@ -271,54 +300,33 @@
             const isComplete = percent >= 100;
             const isZero = item.paid === 0;
             
-            let statusClass = 'partial';
-            let colorClass = 'text-warning';
-            let barColor = 'var(--warning)';
-            let icon = '';
+            // Clases dinámicas
+            let avatarClass = '';
+            let pillClass = 'p-orange';
+            
+            if (isComplete) { avatarClass = 'done'; pillClass = 'p-green'; }
+            if (isZero) { avatarClass = 'zero'; pillClass = 'p-red'; }
 
-            if (isComplete) {
-                statusClass = 'completed';
-                colorClass = 'text-success';
-                barColor = 'var(--success)';
-                icon = '<i class="fa-solid fa-circle-check text-success"></i>';
-            } else if (isZero) {
-                statusClass = 'pending';
-                colorClass = 'text-danger';
-                barColor = 'var(--danger)';
-                icon = '<i class="fa-solid fa-circle-exclamation text-danger" style="opacity:0.5"></i>';
-            }
+            const initials = getInitials(item.name);
 
             const html = `
-                <div class="card ${statusClass}">
-                    <div class="card-header">
-                        <div>
-                            <div class="user-name">${item.name} ${icon}</div>
-                            <span class="user-date"><i class="fa-regular fa-calendar"></i> ${item.date === '-' ? 'Pendiente' : item.date}</span>
-                        </div>
-                        <div class="percent-badge ${colorClass}">${percent.toFixed(0)}%</div>
+                <div class="user-item">
+                    <div class="avatar ${avatarClass}">${initials}</div>
+                    <div class="info">
+                        <span class="name">${item.name}</span>
+                        <span class="date"><i class="fa-regular fa-clock"></i> ${item.date}</span>
                     </div>
-                    
-                    <div class="amounts-row">
-                        <span class="amt-paid">${item.paid}€ aportados</span>
-                        <span class="amt-goal">Meta: ${item.goal}€</span>
-                    </div>
-
-                    <div class="card-progress-bg">
-                        <div class="card-progress-fill" style="background-color: ${barColor}; width: 0%" data-width="${percent}%"></div>
+                    <div class="amount">
+                        <span class="money">${item.paid}€</span>
+                        <span class="percent ${pillClass}">${percent.toFixed(0)}%</span>
                     </div>
                 </div>
             `;
             container.innerHTML += html;
         });
-
-        setTimeout(() => {
-            document.querySelectorAll('.card-progress-fill').forEach(el => {
-                el.style.width = el.getAttribute('data-width');
-            });
-        }, 100);
     }
 
-    // --- FILTROS Y ORDEN ---
+    // --- FILTROS ---
     function filterData() {
         const query = document.getElementById('searchInput').value.toLowerCase();
         currentData = contributors.filter(item => item.name.toLowerCase().includes(query));
@@ -326,34 +334,34 @@
     }
 
     function sortData(type) {
-        document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+        // Estilos botones
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(`btn-${type}`).classList.add('active');
 
+        // Reset data base
+        let tempData = [...contributors];
+
         if (type === 'default') {
-            currentData.sort((a, b) => {
+            // Orden por defecto: Completados arriba, luego mayor aporte
+            tempData.sort((a, b) => {
                 const pa = a.paid / a.goal;
                 const pb = b.paid / b.goal;
                 return pb - pa;
             });
         } else if (type === 'amount') {
-            currentData.sort((a, b) => b.paid - a.paid);
+            // Ranking puro de dinero
+            tempData.sort((a, b) => b.paid - a.paid);
+        } else if (type === 'pending') {
+            // Filtrar solo los que NO han completado
+            tempData = tempData.filter(item => item.paid < item.goal);
+            tempData.sort((a, b) => a.paid - b.paid); // Menos han pagado primero
         }
-        renderList(currentData);
-    }
 
-    // --- UTILIDADES ---
-    function animateValue(id, end) {
-        const obj = document.getElementById(id);
-        const start = 0;
-        const duration = 1000;
-        let startTimestamp = null;
-        const step = (timestamp) => {
-            if (!startTimestamp) startTimestamp = timestamp;
-            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-            obj.innerHTML = Math.floor(progress * (end - start) + start) + "€";
-            if (progress < 1) window.requestAnimationFrame(step);
-        };
-        window.requestAnimationFrame(step);
+        currentData = tempData;
+        renderList(currentData);
+        
+        // Reset search si se cambia de tab
+        document.getElementById('searchInput').value = '';
     }
 </script>
 
