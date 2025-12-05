@@ -37,7 +37,7 @@
         h1 { font-weight: 800; color: var(--primary); font-size: 1.8rem; }
         p.date { color: var(--text-light); font-size: 0.9rem; margin-top: 5px; }
 
-        /* DASHBOARD FINANCIERO (La ecuación) */
+        /* DASHBOARD FINANCIERO */
         .dashboard {
             background: white;
             border-radius: 16px;
@@ -134,7 +134,7 @@
         .text-danger { color: var(--danger); }
         .text-primary { color: var(--primary); }
 
-        /* Responsive Math Row */
+        /* Responsive */
         @media (max-width: 600px) {
             .math-row { flex-direction: column; gap: 5px; }
             .stat-box { width: 100%; }
@@ -206,20 +206,20 @@
 </div>
 
 <script>
-    // --- DATOS ---
+    // --- DATOS ACTUALIZADOS (SUMADOS A FECHA 5/12/2025) ---
     const contributors = [
-        { name: "Mario y Natalia", goal: 400, paid: 80, date: "03/11/2025" },
+        { name: "Mario y Natalia", goal: 400, paid: 120, date: "01/12/2025" },
         { name: "Clara", goal: 200, paid: 200, date: "02/10/2025" },
-        { name: "Guillermo y Angela", goal: 400, paid: 80, date: "03/11/2025" },
+        { name: "Guillermo y Angela", goal: 400, paid: 120, date: "01/12/2025" },
         { name: "Inma y Cristobal", goal: 400, paid: 80, date: "03/11/2025" },
-        { name: "Elia y Diego", goal: 400, paid: 80, date: "03/11/2025" },
+        { name: "Elia y Diego", goal: 400, paid: 120, date: "05/12/2025" },
         { name: "Irene y Tomás", goal: 400, paid: 120, date: "03/11/2025" },
         { name: "FranSisco", goal: 200, paid: 20, date: "08/10/2025" },
-        { name: "Angel y Tamara", goal: 400, paid: 40, date: "21/10/2025" },
+        { name: "Angel y Tamara", goal: 400, paid: 80, date: "01/12/2025" },
         { name: "Maria", goal: 200, paid: 20, date: "03/11/2025" },
         { name: "Pablo y Hassy", goal: 400, paid: 100, date: "23/11/2025" },
-        { name: "Sergio Doctor", goal: 200, paid: 0, date: "-" },
-        { name: "Rubia y Alberto", goal: 400, paid: 0, date: "-" }
+        { name: "Rubia y Alberto", goal: 400, paid: 100, date: "01/12/2025" },
+        { name: "Sergio Doctor", goal: 200, paid: 0, date: "-" }
     ];
 
     // --- GASTOS CONFIG ---
@@ -230,30 +230,25 @@
 
     // --- INICIALIZACIÓN ---
     document.addEventListener("DOMContentLoaded", () => {
-        // Poner fecha de hoy
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         document.getElementById('current-date').innerText = "Actualizado: " + new Date().toLocaleDateString('es-ES', options);
         
-        // Config gastos UI
         document.getElementById('total-expenses').innerText = EXPENSES + "€";
         document.getElementById('expenses-desc').innerText = EXPENSES_DESC;
 
         updateDashboard();
-        sortData('default'); // Render inicial ordenado
+        sortData('default'); 
     });
 
     // --- LÓGICA DEL DASHBOARD ---
     function updateDashboard() {
-        // 1. Cálculos
         const totalCollected = contributors.reduce((acc, curr) => acc + curr.paid, 0);
         const totalGoal = contributors.reduce((acc, curr) => acc + curr.goal, 0);
         const netAvailable = totalCollected - EXPENSES;
         const remainingToGoal = totalGoal - netAvailable;
         
-        // Porcentaje real basado en lo disponible vs meta
         const globalPercent = Math.max(0, (netAvailable / totalGoal) * 100);
 
-        // 2. Actualizar DOM
         animateValue("total-collected", totalCollected);
         animateValue("net-available", netAvailable);
         animateValue("amount-remaining", remainingToGoal);
@@ -261,7 +256,6 @@
         document.getElementById('global-goal-text').innerText = `Meta Total: ${totalGoal}€`;
         document.getElementById('global-percent-text').innerText = `${globalPercent.toFixed(1)}% Completado (Neto)`;
         
-        // Barra de progreso
         setTimeout(() => {
             document.getElementById('global-bar').style.width = `${globalPercent}%`;
         }, 300);
@@ -277,7 +271,6 @@
             const isComplete = percent >= 100;
             const isZero = item.paid === 0;
             
-            // Determinar estilos
             let statusClass = 'partial';
             let colorClass = 'text-warning';
             let barColor = 'var(--warning)';
@@ -295,7 +288,6 @@
                 icon = '<i class="fa-solid fa-circle-exclamation text-danger" style="opacity:0.5"></i>';
             }
 
-            // HTML de la tarjeta
             const html = `
                 <div class="card ${statusClass}">
                     <div class="card-header">
@@ -319,7 +311,6 @@
             container.innerHTML += html;
         });
 
-        // Trigger animación barras
         setTimeout(() => {
             document.querySelectorAll('.card-progress-fill').forEach(el => {
                 el.style.width = el.getAttribute('data-width');
@@ -335,12 +326,10 @@
     }
 
     function sortData(type) {
-        // Botones UI
         document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(`btn-${type}`).classList.add('active');
 
         if (type === 'default') {
-            // Orden: Completados primero, luego por % pagado descendente
             currentData.sort((a, b) => {
                 const pa = a.paid / a.goal;
                 const pb = b.paid / b.goal;
@@ -349,7 +338,6 @@
         } else if (type === 'amount') {
             currentData.sort((a, b) => b.paid - a.paid);
         }
-
         renderList(currentData);
     }
 
